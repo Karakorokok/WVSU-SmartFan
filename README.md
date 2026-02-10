@@ -7,3 +7,5 @@ Project by:
 2. Dave Lacandula
 3. Jade Bantillo
 4. John Oliver Suguilon
+
+The app uses firebase real-time database, to modify replace google-services.json file generated from firebase and db url in BaseActivity.kt 
