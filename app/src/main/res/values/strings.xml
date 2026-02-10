@@ -1,0 +1,31 @@
+<resources>
+    <string name="app_name">SmartFan</string>
+    <string name="app_title">SmartFan Remote Control</string>
+    <string name="home">Home</string>
+    <string name="settings">Settings</string>
+    <string name="switch_label">ON / OFF</string>
+    <string name="mode">Mode</string>
+    <string name="automatic">Automatic</string>
+    <string name="manual">Manual</string>
+    <string name="auto_preset">Automatic Mode Preset</string>
+    <string name="preset_details">Enter temperature in \u00B0C</string>
+    <string name="enter_value">Enter temp in \u00B0C</string>
+    <string name="auto_on">Auto On:</string>
+    <string name="auto_off">Auto Off:</string>
+    <string name="auto_low">Auto Low:</string>
+    <string name="auto_medium">Auto Medium:</string>
+    <string name="auto_high">Auto High:</string>
+    <string name="temperature">Temperature</string>
+    <string name="low">Low</string>
+    <string name="mid">Mid</string>
+    <string name="high">High</string>
+    <string name="swing_left_right">Swing Left → Right</string>
+    <string name="swing_top_bottom">Swing Top → Bottom</string>
+    <string name="speed">Speed</string>
+    <string name="placeholder">--</string>
+    <string name="off">Off</string>
+    <string name="swing">Swing</string>
+    <string name="left_to_right">← →</string>
+    <string name="up_down">↑ ↓</string>
+    <string name="save_preset">Save Preset</string>
+</resources>
