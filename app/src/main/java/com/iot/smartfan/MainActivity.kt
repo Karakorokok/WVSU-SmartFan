@@ -5,10 +5,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import android.content.Intent
-import android.widget.Button;
+import android.widget.Button
 import android.widget.ImageButton
 import com.google.firebase.database.*
-import com.google.firebase.database.FirebaseDatabase
 import android.widget.TextView
 
 class MainActivity : BaseActivity() {
@@ -46,7 +45,6 @@ class MainActivity : BaseActivity() {
         val dataRef = db.getReference("data")
 
         dataRef.addValueEventListener(object : ValueEventListener {
-
             override fun onDataChange(snapshot: DataSnapshot) {
                 val mode = snapshot.child("mode").getValue(Int::class.java) ?: 0
                 modeValue.text = if (mode == 0) "Manual" else "Automatic"
@@ -54,34 +52,20 @@ class MainActivity : BaseActivity() {
                 val temp = snapshot.child("temperature").getValue(Double::class.java) ?: 0.0
                 temperatureValue.text = String.format("%.2f°C", temp)
 
-                val currentOffValue = snapshot.child("off").getValue(Int::class.java) ?: 0
-                updateSwitchImage(btnSpeedOff, currentOffValue)
-                val currentLowValue = snapshot.child("low").getValue(Int::class.java) ?: 0
-                updateSwitchImage(btnSpeedLow, currentLowValue)
-                val currentMidValue = snapshot.child("mid").getValue(Int::class.java) ?: 0
-                updateSwitchImage(btnSpeedMid, currentMidValue)
-                val currentHighValue = snapshot.child("high").getValue(Int::class.java) ?: 0
-                updateSwitchImage(btnSpeedHigh, currentHighValue)
+                val speed = snapshot.child("speed").getValue(Int::class.java) ?: 0
+                updateSpeedButtons(speed)
+                speedValue.text = when(speed) {
+                    0 -> "Off"
+                    1 -> "Low"
+                    2 -> "Mid"
+                    3 -> "High"
+                    else -> "--"
+                }
 
                 val currentSwingX = snapshot.child("swing_x").getValue(Int::class.java) ?: 0
                 updateSwitchImage(btnSwingX, currentSwingX)
                 val currentSwingY = snapshot.child("swing_y").getValue(Int::class.java) ?: 0
                 updateSwitchImage(btnSwingY, currentSwingY)
-
-                val off = snapshot.child("off").getValue(Int::class.java) ?: 0
-                val low = snapshot.child("low").getValue(Int::class.java) ?: 0
-                val mid = snapshot.child("mid").getValue(Int::class.java) ?: 0
-                val high = snapshot.child("high").getValue(Int::class.java) ?: 0
-
-                val speedText = when {
-                    off  == 1 -> "Off"
-                    high == 1 -> "High"
-                    mid  == 1 -> "Mid"
-                    low  == 1 -> "Low"
-                    else -> "--"
-                }
-
-                speedValue.text = speedText
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -89,49 +73,13 @@ class MainActivity : BaseActivity() {
             }
         })
 
-        btnSpeedOff.setOnClickListener {
-            setFanState(
-                off = 1,
-                low = 0,
-                mid = 0,
-                high = 0
-            )
-        }
+        btnSpeedOff.setOnClickListener { setFanSpeed(0) }
+        btnSpeedLow.setOnClickListener { setFanSpeed(1) }
+        btnSpeedMid.setOnClickListener { setFanSpeed(2) }
+        btnSpeedHigh.setOnClickListener { setFanSpeed(3) }
 
-        btnSpeedLow.setOnClickListener {
-            setFanState(
-                off = 0,
-                low = 1,
-                mid = 0,
-                high = 0
-            )
-        }
-
-        btnSpeedMid.setOnClickListener {
-            setFanState(
-                off = 0,
-                low = 0,
-                mid = 1,
-                high = 0
-            )
-        }
-
-        btnSpeedHigh.setOnClickListener {
-            setFanState(
-                off = 0,
-                low = 0,
-                mid = 0,
-                high = 1
-            )
-        }
-
-        btnSwingX.setOnClickListener {
-            toggleSwing("swing_x", btnSwingX)
-        }
-
-        btnSwingY.setOnClickListener {
-            toggleSwing("swing_y", btnSwingY)
-        }
+        btnSwingX.setOnClickListener { toggleSwing("swing_x", btnSwingX) }
+        btnSwingY.setOnClickListener { toggleSwing("swing_y", btnSwingY) }
 
         btnSettings.setOnClickListener {
             val intent = Intent(this, SettingsActivity::class.java)
@@ -140,17 +88,10 @@ class MainActivity : BaseActivity() {
         }
     }
 
-    private fun setFanState(off: Int, low: Int, mid: Int, high: Int) {
-        val updates = mapOf(
-            "off" to off,
-            "low" to low,
-            "mid" to mid,
-            "high" to high
-        )
-
-        db.getReference("data").updateChildren(updates)
+    private fun setFanSpeed(speed: Int) {
+        db.getReference("data").child("speed").setValue(speed)
             .addOnFailureListener {
-                println("Failed to update fan state: ${it.message}")
+                println("Failed to update fan speed: ${it.message}")
             }
     }
 
@@ -164,6 +105,18 @@ class MainActivity : BaseActivity() {
                     println("Failed to update $path: ${it.message}")
                 }
         }
+    }
+
+    private fun updateSpeedButtons(speed: Int) {
+        val btnSpeedOff = findViewById<ImageButton>(R.id.btn_speed_off)
+        val btnSpeedLow = findViewById<ImageButton>(R.id.btn_speed_low)
+        val btnSpeedMid = findViewById<ImageButton>(R.id.btn_speed_mid)
+        val btnSpeedHigh = findViewById<ImageButton>(R.id.btn_speed_high)
+
+        btnSpeedOff.setImageResource(if (speed == 0) R.drawable.on else R.drawable.off)
+        btnSpeedLow.setImageResource(if (speed == 1) R.drawable.on else R.drawable.off)
+        btnSpeedMid.setImageResource(if (speed == 2) R.drawable.on else R.drawable.off)
+        btnSpeedHigh.setImageResource(if (speed == 3) R.drawable.on else R.drawable.off)
     }
 
 }
