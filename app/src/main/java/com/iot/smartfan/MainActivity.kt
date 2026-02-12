@@ -52,7 +52,7 @@ class MainActivity : BaseActivity() {
                 val temp = snapshot.child("temperature").getValue(Double::class.java) ?: 0.0
                 temperatureValue.text = String.format("%.2f°C", temp)
 
-                val speed = snapshot.child("speed").getValue(Int::class.java) ?: 0
+                val speed = snapshot.child("speed_command").getValue(Int::class.java) ?: 0
                 updateSpeedButtons(speed)
                 speedValue.text = when(speed) {
                     0 -> "Off"
@@ -89,7 +89,7 @@ class MainActivity : BaseActivity() {
     }
 
     private fun setFanSpeed(speed: Int) {
-        db.getReference("data").child("speed").setValue(speed)
+        db.getReference("data").child("speed_command").setValue(speed)
             .addOnFailureListener {
                 println("Failed to update fan speed: ${it.message}")
             }
