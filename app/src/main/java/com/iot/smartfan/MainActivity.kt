@@ -52,7 +52,7 @@ class MainActivity : BaseActivity() {
                 val temp = snapshot.child("temperature").getValue(Double::class.java) ?: 0.0
                 temperatureValue.text = String.format("%.2f°C", temp)
 
-                val speed = snapshot.child("speed_command").getValue(Int::class.java) ?: 0
+                val speed = snapshot.child("speed_status").getValue(Int::class.java) ?: 0
                 updateSpeedButtons(speed)
                 speedValue.text = when(speed) {
                     0 -> "Off"
